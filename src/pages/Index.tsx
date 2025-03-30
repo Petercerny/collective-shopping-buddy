@@ -1,12 +1,43 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { useState, useEffect } from "react";
+import Header from "@/components/Header";
+import NewListForm from "@/components/NewListForm";
+import ListGrid from "@/components/ListGrid";
+import { ShoppingList } from "@/types";
+import { getStoredLists } from "@/lib/storage";
 
 const Index = () => {
+  const [lists, setLists] = useState<ShoppingList[]>([]);
+
+  const loadLists = () => {
+    const storedLists = getStoredLists();
+    // Sort lists by creation date (newest first)
+    storedLists.sort((a, b) => b.createdAt - a.createdAt);
+    setLists(storedLists);
+  };
+
+  useEffect(() => {
+    loadLists();
+  }, []);
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen flex flex-col bg-gray-50">
+      <Header />
+      <main className="container mx-auto px-4 py-6 flex-1">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-6">My Shopping Lists</h2>
+            <NewListForm onListCreated={loadLists} />
+          </div>
+          
+          <div className="mt-8">
+            <ListGrid lists={lists} />
+          </div>
+        </div>
+      </main>
+      <footer className="py-4 text-center text-gray-500 text-sm border-t">
+        <p>Shopping Buddy - Share your shopping lists with friends & family</p>
+      </footer>
     </div>
   );
 };
