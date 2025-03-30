@@ -6,6 +6,8 @@ import { generateId } from "@/lib/utils";
 import { saveList } from "@/lib/storage";
 import { ShoppingList } from "@/types";
 import { useToast } from "@/components/ui/use-toast";
+import { usePalette } from "@/lib/PaletteContext";
+import { getPaletteButtonClass } from "@/lib/utils";
 
 interface NewListFormProps {
   onListCreated: () => void;
@@ -14,6 +16,7 @@ interface NewListFormProps {
 const NewListForm = ({ onListCreated }: NewListFormProps) => {
   const [listName, setListName] = useState("");
   const { toast } = useToast();
+  const { currentPalette } = usePalette();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,12 +55,12 @@ const NewListForm = ({ onListCreated }: NewListFormProps) => {
           placeholder="Enter list name..."
           value={listName}
           onChange={(e) => setListName(e.target.value)}
-          className="w-full bg-white/80 border-pastel-purple/30"
+          className={`w-full bg-white/80 border-palette-${currentPalette}-primary/30`}
         />
       </div>
       <Button 
         type="submit" 
-        className="w-full bg-pastel-purple hover:bg-pastel-purple/90 text-primary-foreground"
+        className={getPaletteButtonClass(currentPalette)}
       >
         Create New List
       </Button>

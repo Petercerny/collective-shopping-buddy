@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -11,6 +10,7 @@ import NewItemForm from "@/components/NewItemForm";
 import ShoppingItemComponent from "@/components/ShoppingItem";
 import ShareListButton from "@/components/ShareListButton";
 import { sortItemsByStatus } from "@/lib/utils";
+import { usePalette } from "@/lib/PaletteContext";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,6 +27,7 @@ const ListDetail = () => {
   const { listId } = useParams<{ listId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { currentPalette } = usePalette();
   
   const [list, setList] = useState<ShoppingList | null>(null);
   const [sortedItems, setSortedItems] = useState<ShoppingItem[]>([]);
@@ -121,7 +122,7 @@ const ListDetail = () => {
 
   if (!list) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className={`min-h-screen flex flex-col bg-palette-${currentPalette}-background`}>
         <Header />
         <div className="flex-1 flex items-center justify-center">
           <p>Loading list...</p>
@@ -131,7 +132,7 @@ const ListDetail = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className={`min-h-screen flex flex-col bg-palette-${currentPalette}-background`}>
       <Header />
       <main className="container mx-auto px-4 py-6 flex-1">
         <div className="max-w-2xl mx-auto">

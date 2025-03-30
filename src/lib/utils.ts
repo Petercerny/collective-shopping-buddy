@@ -53,6 +53,24 @@ export function getCategoryColor(category: string | undefined, palette: string =
       "drinks": "bg-pastel-blue",
       "household": "bg-palette-ocean-accent",
       "other": "bg-palette-ocean-neutral"
+    },
+    'forest': {
+      "produce": "bg-palette-forest-secondary", 
+      "dairy": "bg-palette-forest-accent",
+      "meat": "bg-palette-forest-primary",
+      "bakery": "bg-palette-forest-highlight",
+      "drinks": "bg-pastel-blue",
+      "household": "bg-palette-forest-accent",
+      "other": "bg-palette-forest-neutral"
+    },
+    'lavender': {
+      "produce": "bg-palette-lavender-secondary", 
+      "dairy": "bg-palette-lavender-accent",
+      "meat": "bg-palette-lavender-primary",
+      "bakery": "bg-palette-lavender-highlight",
+      "drinks": "bg-pastel-blue",
+      "household": "bg-palette-lavender-accent",
+      "other": "bg-palette-lavender-neutral"
     }
   };
   
@@ -83,8 +101,45 @@ export function getPrimaryColor(palette: string): string {
       return 'bg-palette-sunset-primary';
     case 'ocean': 
       return 'bg-palette-ocean-primary';
+    case 'forest':
+      return 'bg-palette-forest-primary';
+    case 'lavender':
+      return 'bg-palette-lavender-primary';
     case 'candy':
     default:
       return 'bg-palette-candy-primary';
+  }
+}
+
+// Helper function to get button classes based on palette
+export function getPaletteButtonClass(palette: string, isOutline: boolean = false): string {
+  if (isOutline) {
+    switch(palette) {
+      case 'sunset':
+        return "border-palette-sunset-primary/30 bg-palette-sunset-primary/20 hover:bg-palette-sunset-primary/30 text-primary-foreground";
+      case 'ocean':
+        return "border-palette-ocean-primary/30 bg-palette-ocean-primary/20 hover:bg-palette-ocean-primary/30 text-primary-foreground";
+      case 'forest':
+        return "border-palette-forest-primary/30 bg-palette-forest-primary/20 hover:bg-palette-forest-primary/30 text-primary-foreground";
+      case 'lavender':
+        return "border-palette-lavender-primary/30 bg-palette-lavender-primary/20 hover:bg-palette-lavender-primary/30 text-primary-foreground";
+      case 'candy':
+      default:
+        return "border-palette-candy-primary/30 bg-palette-candy-primary/20 hover:bg-palette-candy-primary/30 text-primary-foreground";
+    }
+  } else {
+    switch(palette) {
+      case 'sunset':
+        return "bg-palette-sunset-primary hover:bg-palette-sunset-primary/90 text-primary-foreground";
+      case 'ocean':
+        return "bg-palette-ocean-primary hover:bg-palette-ocean-primary/90 text-primary-foreground";
+      case 'forest':
+        return "bg-palette-forest-primary hover:bg-palette-forest-primary/90 text-primary-foreground";
+      case 'lavender':
+        return "bg-palette-lavender-primary hover:bg-palette-lavender-primary/90 text-primary-foreground";
+      case 'candy':
+      default:
+        return "bg-palette-candy-primary hover:bg-palette-candy-primary/90 text-primary-foreground";
+    }
   }
 }

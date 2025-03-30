@@ -5,9 +5,11 @@ import NewListForm from "@/components/NewListForm";
 import ListGrid from "@/components/ListGrid";
 import { ShoppingList } from "@/types";
 import { getStoredLists } from "@/lib/storage";
+import { usePalette } from "@/lib/PaletteContext";
 
 const Index = () => {
   const [lists, setLists] = useState<ShoppingList[]>([]);
+  const { currentPalette } = usePalette();
 
   const loadLists = () => {
     const storedLists = getStoredLists();
@@ -21,7 +23,7 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className={`min-h-screen flex flex-col bg-palette-${currentPalette}-background`}>
       <Header />
       <main className="container mx-auto px-4 py-6 flex-1">
         <div className="max-w-4xl mx-auto">
@@ -35,8 +37,8 @@ const Index = () => {
           </div>
         </div>
       </main>
-      <footer className="py-4 text-center text-gray-500 text-sm border-t">
-        <p>Shopping Buddy - Share your shopping lists with friends & family</p>
+      <footer className={`py-4 text-center text-gray-500 text-sm border-t border-palette-${currentPalette}-primary/10`}>
+        <p>Cartly - Share your shopping lists with friends & family</p>
       </footer>
     </div>
   );

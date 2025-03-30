@@ -24,6 +24,10 @@ const ShoppingItem = ({ item, onCheck, onDelete }: ShoppingItemProps) => {
         return "border-gray-400 data-[state=checked]:bg-palette-sunset-primary data-[state=checked]:border-palette-sunset-primary";
       case 'ocean':
         return "border-gray-400 data-[state=checked]:bg-palette-ocean-primary data-[state=checked]:border-palette-ocean-primary";
+      case 'forest':
+        return "border-gray-400 data-[state=checked]:bg-palette-forest-primary data-[state=checked]:border-palette-forest-primary";
+      case 'lavender':
+        return "border-gray-400 data-[state=checked]:bg-palette-lavender-primary data-[state=checked]:border-palette-lavender-primary";
       case 'candy':
       default:
         return "border-gray-400 data-[state=checked]:bg-palette-candy-primary data-[state=checked]:border-palette-candy-primary";

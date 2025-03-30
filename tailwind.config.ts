@@ -80,7 +80,7 @@ export default {
 					blue: '#A1D0FF',     // Vibrant Pastel Blue
 					gray: '#E6E6F5',     // Vibrant Pastel Gray
 				},
-				// Added color palette options
+				// Color palette options with backgrounds
 				palette: {
 					// Candy palette
 					candy: {
@@ -89,6 +89,7 @@ export default {
 						accent: '#A1D0FF',   // Blue
 						neutral: '#E6E6F5',  // Gray
 						highlight: '#FFAA7A', // Orange
+						background: '#FFF5F8', // Light pink background
 					},
 					// Sunset palette
 					sunset: {
@@ -97,6 +98,7 @@ export default {
 						accent: '#FFB7C5',   // Pink
 						neutral: '#E6E6F5',  // Gray
 						highlight: '#FFC4A3', // Peach
+						background: '#FFF9E6', // Light yellow background
 					},
 					// Ocean palette
 					ocean: {
@@ -105,6 +107,25 @@ export default {
 						accent: '#D3BBFF',   // Purple
 						neutral: '#E6E6F5',  // Gray
 						highlight: '#FFE878', // Yellow
+						background: '#F0F8FF', // Light blue background
+					},
+					// Forest palette (new)
+					forest: {
+						primary: '#C1F0A0',  // Green
+						secondary: '#A1D0FF', // Blue
+						accent: '#FFE878',   // Yellow
+						neutral: '#E6E6F5',  // Gray
+						highlight: '#FFC4A3', // Peach
+						background: '#F5FFF0', // Light green background
+					},
+					// Lavender palette (new)
+					lavender: {
+						primary: '#D3BBFF',  // Purple
+						secondary: '#FFB7C5', // Pink
+						accent: '#A1D0FF',   // Blue
+						neutral: '#E6E6F5',  // Gray
+						highlight: '#C1F0A0', // Green
+						background: '#F8F5FF', // Light purple background
 					},
 				}
 			},

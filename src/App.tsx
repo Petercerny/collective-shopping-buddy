@@ -9,6 +9,7 @@ import ListDetail from "./pages/ListDetail";
 import SharedList from "./pages/SharedList";
 import NotFound from "./pages/NotFound";
 import { PaletteProvider } from "./lib/PaletteContext";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient();
 

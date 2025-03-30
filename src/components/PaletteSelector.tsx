@@ -59,6 +59,30 @@ const PaletteSelector = () => {
           </div>
           Ocean
         </DropdownMenuItem>
+        
+        <DropdownMenuItem 
+          className={`flex items-center gap-2 ${currentPalette === 'forest' ? 'bg-palette-forest-primary/20' : ''}`}
+          onClick={() => setPalette('forest')}
+        >
+          <div className="flex gap-1">
+            <div className="w-3 h-3 rounded-full bg-palette-forest-primary"></div>
+            <div className="w-3 h-3 rounded-full bg-palette-forest-secondary"></div>
+            <div className="w-3 h-3 rounded-full bg-palette-forest-accent"></div>
+          </div>
+          Forest
+        </DropdownMenuItem>
+        
+        <DropdownMenuItem 
+          className={`flex items-center gap-2 ${currentPalette === 'lavender' ? 'bg-palette-lavender-primary/20' : ''}`}
+          onClick={() => setPalette('lavender')}
+        >
+          <div className="flex gap-1">
+            <div className="w-3 h-3 rounded-full bg-palette-lavender-primary"></div>
+            <div className="w-3 h-3 rounded-full bg-palette-lavender-secondary"></div>
+            <div className="w-3 h-3 rounded-full bg-palette-lavender-accent"></div>
+          </div>
+          Lavender
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

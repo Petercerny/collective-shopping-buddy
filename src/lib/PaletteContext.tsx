@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-type PaletteType = 'candy' | 'sunset' | 'ocean';
+type PaletteType = 'candy' | 'sunset' | 'ocean' | 'forest' | 'lavender';
 
 interface PaletteContextType {
   currentPalette: PaletteType;
@@ -27,7 +27,15 @@ export function PaletteProvider({ children }: { children: React.ReactNode }) {
   const setPalette = (palette: PaletteType) => {
     setCurrentPalette(palette);
     localStorage.setItem('cartly-palette', palette);
+    
+    // Apply body background based on palette
+    document.body.className = `bg-palette-${palette}-background`;
   };
+  
+  // Set initial body class when component mounts
+  useEffect(() => {
+    document.body.className = `bg-palette-${currentPalette}-background`;
+  }, []);
 
   return (
     <PaletteContext.Provider value={{ currentPalette, setPalette }}>
