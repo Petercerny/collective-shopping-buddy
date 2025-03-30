@@ -64,10 +64,20 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				brand: {
-					DEFAULT: '#4ade80',  // Green-500
-					light: '#86efac',    // Green-300
-					dark: '#16a34a',     // Green-600
-					accent: '#60a5fa'    // Blue-400
+					DEFAULT: '#F2FCE2',  // Soft Green
+					light: '#FEF7CD',    // Soft Yellow
+					dark: '#E5DEFF',     // Soft Purple
+					accent: '#FFDEE2'    // Soft Pink
+				},
+				pastel: {
+					green: '#F2FCE2',    // Soft Green
+					yellow: '#FEF7CD',   // Soft Yellow
+					orange: '#FEC6A1',   // Soft Orange
+					purple: '#E5DEFF',   // Soft Purple
+					pink: '#FFDEE2',     // Soft Pink
+					peach: '#FDE1D3',    // Soft Peach
+					blue: '#D3E4FD',     // Soft Blue
+					gray: '#F1F0FB',     // Soft Gray
 				},
 			},
 			borderRadius: {

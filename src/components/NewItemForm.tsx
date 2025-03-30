@@ -47,9 +47,9 @@ const NewItemForm = ({ onItemAdd }: NewItemFormProps) => {
         placeholder="Add new item..."
         value={itemName}
         onChange={(e) => setItemName(e.target.value)}
-        className="flex-1"
+        className="flex-1 bg-white/80 border-pastel-purple/30"
       />
-      <Button type="submit" className="bg-brand hover:bg-brand-dark">
+      <Button type="submit" className="bg-pastel-purple hover:bg-pastel-purple/90 text-primary-foreground">
         Add
       </Button>
     </form>

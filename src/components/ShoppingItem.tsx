@@ -25,7 +25,7 @@ const ShoppingItem = ({ item, onCheck, onDelete }: ShoppingItemProps) => {
         <Checkbox 
           checked={item.checked} 
           onCheckedChange={handleCheckChange}
-          className="border-gray-400 data-[state=checked]:bg-brand data-[state=checked]:border-brand"
+          className="border-gray-400 data-[state=checked]:bg-pastel-purple data-[state=checked]:border-pastel-purple"
         />
         <div>
           <div className="shopping-item-text">{item.name}</div>

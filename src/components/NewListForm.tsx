@@ -52,12 +52,12 @@ const NewListForm = ({ onListCreated }: NewListFormProps) => {
           placeholder="Enter list name..."
           value={listName}
           onChange={(e) => setListName(e.target.value)}
-          className="w-full"
+          className="w-full bg-white/80 border-pastel-purple/30"
         />
       </div>
       <Button 
         type="submit" 
-        className="w-full bg-brand hover:bg-brand-dark"
+        className="w-full bg-pastel-purple hover:bg-pastel-purple/90 text-primary-foreground"
       >
         Create New List
       </Button>

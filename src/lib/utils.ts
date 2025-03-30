@@ -20,3 +20,35 @@ export function sortItemsByStatus(items: any[]): any[] {
     return b.createdAt - a.createdAt;
   });
 }
+
+// Add a function to generate pastel colors for categories
+export function getCategoryColor(category: string | undefined): string {
+  if (!category) return "bg-pastel-gray";
+  
+  const colors = {
+    "produce": "bg-pastel-green", 
+    "dairy": "bg-pastel-blue",
+    "meat": "bg-pastel-pink",
+    "bakery": "bg-pastel-yellow",
+    "drinks": "bg-pastel-peach",
+    "household": "bg-pastel-purple",
+    "other": "bg-pastel-gray"
+  };
+  
+  const lowerCategory = category.toLowerCase();
+  for (const [key, value] of Object.entries(colors)) {
+    if (lowerCategory.includes(key)) {
+      return value;
+    }
+  }
+  
+  // Use hash of string to generate consistent color for any category
+  const hash = category.split("").reduce((acc, char) => {
+    return acc + char.charCodeAt(0);
+  }, 0);
+  
+  const colorKeys = Object.keys(colors);
+  const colorIndex = hash % colorKeys.length;
+  
+  return colors[colorKeys[colorIndex] as keyof typeof colors];
+}

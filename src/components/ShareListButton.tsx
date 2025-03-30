@@ -53,14 +53,14 @@ const ShareListButton = ({ listId, shareId: initialShareId }: ShareListButtonPro
       <DialogTrigger asChild>
         <Button 
           variant="outline" 
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 border-pastel-purple/30 bg-pastel-pink/20 hover:bg-pastel-pink/30 text-primary-foreground"
           onClick={shareId ? undefined : generateShareLink}
         >
           <Share2 size={16} />
           Share List
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md bg-white/95 backdrop-blur-md border-pastel-purple/20">
         <DialogHeader>
           <DialogTitle>Share shopping list</DialogTitle>
         </DialogHeader>
@@ -70,12 +70,12 @@ const ShareListButton = ({ listId, shareId: initialShareId }: ShareListButtonPro
               Share this link with friends or family members to collaborate on this shopping list
             </div>
             <input
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+              className="flex h-10 w-full rounded-md border border-pastel-purple/30 bg-white/80 px-3 py-2 text-sm"
               value={shareId ? `${window.location.origin}/shared/${shareId}` : "Generating link..."}
               readOnly
             />
           </div>
-          <Button onClick={copyShareLink} className="bg-brand hover:bg-brand-dark">
+          <Button onClick={copyShareLink} className="bg-pastel-purple hover:bg-pastel-purple/90 text-primary-foreground">
             Copy
           </Button>
         </div>
