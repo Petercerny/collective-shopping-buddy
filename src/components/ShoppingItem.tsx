@@ -4,6 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { usePalette } from "@/lib/PaletteContext";
 
 interface ShoppingItemProps {
   item: ShoppingItemType;
@@ -12,8 +13,21 @@ interface ShoppingItemProps {
 }
 
 const ShoppingItem = ({ item, onCheck, onDelete }: ShoppingItemProps) => {
+  const { currentPalette } = usePalette();
   const handleCheckChange = (checked: boolean) => {
     onCheck(item.id, checked);
+  };
+
+  const getPaletteCheckboxClass = () => {
+    switch(currentPalette) {
+      case 'sunset':
+        return "border-gray-400 data-[state=checked]:bg-palette-sunset-primary data-[state=checked]:border-palette-sunset-primary";
+      case 'ocean':
+        return "border-gray-400 data-[state=checked]:bg-palette-ocean-primary data-[state=checked]:border-palette-ocean-primary";
+      case 'candy':
+      default:
+        return "border-gray-400 data-[state=checked]:bg-palette-candy-primary data-[state=checked]:border-palette-candy-primary";
+    }
   };
 
   return (
@@ -25,7 +39,7 @@ const ShoppingItem = ({ item, onCheck, onDelete }: ShoppingItemProps) => {
         <Checkbox 
           checked={item.checked} 
           onCheckedChange={handleCheckChange}
-          className="border-gray-400 data-[state=checked]:bg-pastel-purple data-[state=checked]:border-pastel-purple"
+          className={getPaletteCheckboxClass()}
         />
         <div>
           <div className="shopping-item-text">{item.name}</div>

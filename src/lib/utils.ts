@@ -21,19 +21,42 @@ export function sortItemsByStatus(items: any[]): any[] {
   });
 }
 
-// Add a function to generate pastel colors for categories
-export function getCategoryColor(category: string | undefined): string {
+// Add a function to generate pastel colors for categories based on current palette
+export function getCategoryColor(category: string | undefined, palette: string = 'candy'): string {
   if (!category) return "bg-pastel-gray";
   
-  const colors = {
-    "produce": "bg-pastel-green", 
-    "dairy": "bg-pastel-blue",
-    "meat": "bg-pastel-pink",
-    "bakery": "bg-pastel-yellow",
-    "drinks": "bg-pastel-peach",
-    "household": "bg-pastel-purple",
-    "other": "bg-pastel-gray"
+  // Define colors based on palette
+  const colorMappings = {
+    'candy': {
+      "produce": "bg-palette-candy-secondary", 
+      "dairy": "bg-palette-candy-accent",
+      "meat": "bg-palette-candy-primary",
+      "bakery": "bg-palette-candy-highlight",
+      "drinks": "bg-pastel-blue",
+      "household": "bg-palette-candy-accent",
+      "other": "bg-palette-candy-neutral"
+    },
+    'sunset': {
+      "produce": "bg-palette-sunset-secondary", 
+      "dairy": "bg-palette-sunset-accent",
+      "meat": "bg-palette-sunset-primary",
+      "bakery": "bg-palette-sunset-highlight",
+      "drinks": "bg-pastel-blue",
+      "household": "bg-palette-sunset-accent",
+      "other": "bg-palette-sunset-neutral"
+    },
+    'ocean': {
+      "produce": "bg-palette-ocean-secondary", 
+      "dairy": "bg-palette-ocean-accent",
+      "meat": "bg-palette-ocean-primary",
+      "bakery": "bg-palette-ocean-highlight",
+      "drinks": "bg-pastel-blue",
+      "household": "bg-palette-ocean-accent",
+      "other": "bg-palette-ocean-neutral"
+    }
   };
+  
+  const colors = colorMappings[palette as keyof typeof colorMappings] || colorMappings.candy;
   
   const lowerCategory = category.toLowerCase();
   for (const [key, value] of Object.entries(colors)) {
@@ -51,4 +74,17 @@ export function getCategoryColor(category: string | undefined): string {
   const colorIndex = hash % colorKeys.length;
   
   return colors[colorKeys[colorIndex] as keyof typeof colors];
+}
+
+// Get the primary color for the current palette
+export function getPrimaryColor(palette: string): string {
+  switch(palette) {
+    case 'sunset':
+      return 'bg-palette-sunset-primary';
+    case 'ocean': 
+      return 'bg-palette-ocean-primary';
+    case 'candy':
+    default:
+      return 'bg-palette-candy-primary';
+  }
 }

@@ -3,9 +3,12 @@ import { ShoppingCart, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
+import PaletteSelector from "@/components/PaletteSelector";
+import { usePalette } from "@/lib/PaletteContext";
 
 const Header = () => {
   const [username, setUsername] = useState<string>(localStorage.getItem("username") || "");
+  const { currentPalette } = usePalette();
 
   const handleSetUsername = (name: string) => {
     localStorage.setItem("username", name);
@@ -13,20 +16,25 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-10 w-full bg-white/70 backdrop-blur-md border-b border-pastel-purple/10 shadow-sm">
+    <header className={`sticky top-0 z-10 w-full bg-white/70 backdrop-blur-md border-b border-${currentPalette === 'candy' ? 'palette-candy-primary' : currentPalette === 'sunset' ? 'palette-sunset-primary' : 'palette-ocean-primary'}/10 shadow-sm`}>
       <div className="container mx-auto px-4">
         <div className="py-4 flex items-center justify-between">
           <div className="flex items-center">
-            <div className="bg-pastel-purple/20 p-2 rounded-full">
+            <div className={`${currentPalette === 'candy' ? 'bg-palette-candy-primary' : currentPalette === 'sunset' ? 'bg-palette-sunset-primary' : 'bg-palette-ocean-primary'}/20 p-2 rounded-full`}>
               <ShoppingCart size={24} className="text-primary-foreground" />
             </div>
-            <h1 className="ml-2 text-xl font-medium">Shopping Buddy</h1>
+            <h1 className="ml-2 text-xl font-medium">Cartly</h1>
           </div>
           
           <div className="flex items-center gap-2">
+            <PaletteSelector />
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="text-gray-600 hover:text-gray-900 bg-pastel-blue/30 hover:bg-pastel-blue/50 rounded-full">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="text-gray-600 hover:text-gray-900 bg-pastel-blue/30 hover:bg-pastel-blue/50 rounded-full"
+                >
                   <User size={20} />
                 </Button>
               </SheetTrigger>

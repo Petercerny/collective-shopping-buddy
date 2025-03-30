@@ -69,16 +69,44 @@ export default {
 					dark: '#E5DEFF',     // Soft Purple
 					accent: '#FFDEE2'    // Soft Pink
 				},
+				// Updated more vibrant pastel colors
 				pastel: {
-					green: '#F2FCE2',    // Soft Green
-					yellow: '#FEF7CD',   // Soft Yellow
-					orange: '#FEC6A1',   // Soft Orange
-					purple: '#E5DEFF',   // Soft Purple
-					pink: '#FFDEE2',     // Soft Pink
-					peach: '#FDE1D3',    // Soft Peach
-					blue: '#D3E4FD',     // Soft Blue
-					gray: '#F1F0FB',     // Soft Gray
+					green: '#C1F0A0',    // Vibrant Pastel Green
+					yellow: '#FFE878',   // Vibrant Pastel Yellow
+					orange: '#FFAA7A',   // Vibrant Pastel Orange
+					purple: '#D3BBFF',   // Vibrant Pastel Purple
+					pink: '#FFB7C5',     // Vibrant Pastel Pink
+					peach: '#FFC4A3',    // Vibrant Pastel Peach
+					blue: '#A1D0FF',     // Vibrant Pastel Blue
+					gray: '#E6E6F5',     // Vibrant Pastel Gray
 				},
+				// Added color palette options
+				palette: {
+					// Candy palette
+					candy: {
+						primary: '#FFB7C5',  // Pink
+						secondary: '#D3BBFF', // Purple
+						accent: '#A1D0FF',   // Blue
+						neutral: '#E6E6F5',  // Gray
+						highlight: '#FFAA7A', // Orange
+					},
+					// Sunset palette
+					sunset: {
+						primary: '#FFE878',  // Yellow
+						secondary: '#FFAA7A', // Orange
+						accent: '#FFB7C5',   // Pink
+						neutral: '#E6E6F5',  // Gray
+						highlight: '#FFC4A3', // Peach
+					},
+					// Ocean palette
+					ocean: {
+						primary: '#A1D0FF',  // Blue
+						secondary: '#C1F0A0', // Green
+						accent: '#D3BBFF',   // Purple
+						neutral: '#E6E6F5',  // Gray
+						highlight: '#FFE878', // Yellow
+					},
+				}
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
