@@ -3,21 +3,33 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { getListByShareId, saveList } from "@/lib/storage";
-import { ShoppingItem, ShoppingList } from "@/types";
+import { ShoppingItem, ShoppingList, SortOption } from "@/types";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Users } from "lucide-react";
 import Header from "@/components/Header";
 import NewItemForm from "@/components/NewItemForm";
 import ShoppingItemComponent from "@/components/ShoppingItem";
-import { sortItemsByStatus } from "@/lib/utils";
+import { sortItems, groupItemsByCategory } from "@/lib/utils";
+import { usePalette } from "@/lib/PaletteContext";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const SharedList = () => {
   const { shareId } = useParams<{ shareId: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { currentPalette } = usePalette();
   
   const [list, setList] = useState<ShoppingList | null>(null);
   const [sortedItems, setSortedItems] = useState<ShoppingItem[]>([]);
+  const [sortOption, setSortOption] = useState<SortOption>("checked");
+  const [showByCategory, setShowByCategory] = useState<boolean>(false);
+  const [groupedItems, setGroupedItems] = useState<Record<string, ShoppingItem[]>>({});
 
   useEffect(() => {
     if (!shareId) return;
@@ -35,8 +47,13 @@ const SharedList = () => {
     }
     
     setList(shoppingList);
-    setSortedItems(sortItemsByStatus(shoppingList.items));
-  }, [shareId, navigate, toast]);
+    const sorted = sortItems(shoppingList.items, sortOption);
+    setSortedItems(sorted);
+    
+    if (showByCategory) {
+      setGroupedItems(groupItemsByCategory(sorted));
+    }
+  }, [shareId, navigate, toast, sortOption, showByCategory]);
 
   const handleAddItem = (item: ShoppingItem) => {
     if (!list) return;
@@ -48,7 +65,13 @@ const SharedList = () => {
     
     saveList(updatedList);
     setList(updatedList);
-    setSortedItems(sortItemsByStatus(updatedList.items));
+    
+    const sorted = sortItems(updatedList.items, sortOption);
+    setSortedItems(sorted);
+    
+    if (showByCategory) {
+      setGroupedItems(groupItemsByCategory(sorted));
+    }
     
     toast({
       title: "Item added",
@@ -70,7 +93,36 @@ const SharedList = () => {
     
     saveList(updatedList);
     setList(updatedList);
-    setSortedItems(sortItemsByStatus(updatedItems));
+    
+    const sorted = sortItems(updatedItems, sortOption);
+    setSortedItems(sorted);
+    
+    if (showByCategory) {
+      setGroupedItems(groupItemsByCategory(sorted));
+    }
+  };
+
+  const handleUpdateItem = (itemId: string, updates: Partial<ShoppingItem>) => {
+    if (!list) return;
+    
+    const updatedItems = list.items.map(item =>
+      item.id === itemId ? { ...item, ...updates } : item
+    );
+    
+    const updatedList = {
+      ...list,
+      items: updatedItems,
+    };
+    
+    saveList(updatedList);
+    setList(updatedList);
+    
+    const sorted = sortItems(updatedItems, sortOption);
+    setSortedItems(sorted);
+    
+    if (showByCategory) {
+      setGroupedItems(groupItemsByCategory(sorted));
+    }
   };
 
   const handleDeleteItem = (itemId: string) => {
@@ -86,7 +138,13 @@ const SharedList = () => {
     
     saveList(updatedList);
     setList(updatedList);
-    setSortedItems(sortItemsByStatus(updatedItems));
+    
+    const sorted = sortItems(updatedItems, sortOption);
+    setSortedItems(sorted);
+    
+    if (showByCategory) {
+      setGroupedItems(groupItemsByCategory(sorted));
+    }
     
     if (itemToDelete) {
       toast({
@@ -96,9 +154,52 @@ const SharedList = () => {
     }
   };
 
+  const renderItems = () => {
+    if (sortedItems.length === 0) {
+      return (
+        <div className="text-center py-8 text-gray-500">
+          <p>This list is empty. Add some items to get started!</p>
+        </div>
+      );
+    }
+
+    if (showByCategory) {
+      return Object.entries(groupedItems).map(([category, items]) => (
+        <div key={category} className="mb-6">
+          <h3 className="font-medium text-sm uppercase tracking-wider text-gray-500 mb-2">{category}</h3>
+          <div className="space-y-1">
+            {items.map(item => (
+              <ShoppingItemComponent
+                key={item.id}
+                item={item}
+                onCheck={handleCheckItem}
+                onDelete={handleDeleteItem}
+                onUpdate={handleUpdateItem}
+              />
+            ))}
+          </div>
+        </div>
+      ));
+    }
+
+    return (
+      <div className="space-y-1">
+        {sortedItems.map(item => (
+          <ShoppingItemComponent
+            key={item.id}
+            item={item}
+            onCheck={handleCheckItem}
+            onDelete={handleDeleteItem}
+            onUpdate={handleUpdateItem}
+          />
+        ))}
+      </div>
+    );
+  };
+
   if (!list) {
     return (
-      <div className="min-h-screen flex flex-col bg-gray-50">
+      <div className={`min-h-screen flex flex-col bg-palette-${currentPalette}-background`}>
         <Header />
         <div className="flex-1 flex items-center justify-center">
           <p>Loading shared list...</p>
@@ -108,7 +209,7 @@ const SharedList = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50">
+    <div className={`min-h-screen flex flex-col bg-palette-${currentPalette}-background`}>
       <Header />
       <main className="container mx-auto px-4 py-6 flex-1">
         <div className="max-w-2xl mx-auto">
@@ -135,24 +236,42 @@ const SharedList = () => {
             </div>
             
             <NewItemForm onItemAdd={handleAddItem} />
+            
+            <div className="flex justify-between items-center mb-4 border-b pb-3">
+              <div className="flex items-center">
+                <label className="mr-2 text-sm text-gray-600">Sort by:</label>
+                <Select value={sortOption} onValueChange={(value) => setSortOption(value as SortOption)}>
+                  <SelectTrigger className="w-[150px] h-8 text-xs">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="name">Name</SelectItem>
+                    <SelectItem value="category">Category</SelectItem>
+                    <SelectItem value="added">Recently Added</SelectItem>
+                    <SelectItem value="checked">Unchecked First</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="flex items-center">
+                <label className="mr-2 text-sm text-gray-600">View:</label>
+                <Select 
+                  value={showByCategory ? "category" : "list"} 
+                  onValueChange={(value) => setShowByCategory(value === "category")}
+                >
+                  <SelectTrigger className="w-[150px] h-8 text-xs">
+                    <SelectValue placeholder="View" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="list">List View</SelectItem>
+                    <SelectItem value="category">Category View</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
           
             <div className="mt-4">
-              {sortedItems.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <p>This list is empty. Add some items to get started!</p>
-                </div>
-              ) : (
-                <div className="space-y-1">
-                  {sortedItems.map(item => (
-                    <ShoppingItemComponent
-                      key={item.id}
-                      item={item}
-                      onCheck={handleCheckItem}
-                      onDelete={handleDeleteItem}
-                    />
-                  ))}
-                </div>
-              )}
+              {renderItems()}
             </div>
           </div>
         </div>

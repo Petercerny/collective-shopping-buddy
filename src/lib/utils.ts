@@ -1,6 +1,7 @@
 
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { ShoppingItem, SortOption } from "@/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -10,7 +11,7 @@ export function generateId(): string {
   return Math.random().toString(36).substring(2, 15);
 }
 
-export function sortItemsByStatus(items: any[]): any[] {
+export function sortItemsByStatus(items: ShoppingItem[]): ShoppingItem[] {
   return [...items].sort((a, b) => {
     // First sort by checked status (unchecked items first)
     if (a.checked !== b.checked) {
@@ -19,6 +20,50 @@ export function sortItemsByStatus(items: any[]): any[] {
     // Then sort by creation date (newest first)
     return b.createdAt - a.createdAt;
   });
+}
+
+export function sortItems(items: ShoppingItem[], sortOption: SortOption): ShoppingItem[] {
+  const itemsCopy = [...items];
+  
+  switch (sortOption) {
+    case "name":
+      return itemsCopy.sort((a, b) => a.name.localeCompare(b.name));
+    
+    case "category":
+      return itemsCopy.sort((a, b) => {
+        // First sort by category
+        const categoryA = a.category || "Other";
+        const categoryB = b.category || "Other";
+        const categoryComparison = categoryA.localeCompare(categoryB);
+        
+        // If categories are equal, sort by name
+        if (categoryComparison === 0) {
+          return a.name.localeCompare(b.name);
+        }
+        
+        return categoryComparison;
+      });
+    
+    case "added":
+      return itemsCopy.sort((a, b) => b.createdAt - a.createdAt);
+      
+    case "checked":
+    default:
+      return sortItemsByStatus(itemsCopy);
+  }
+}
+
+export function groupItemsByCategory(items: ShoppingItem[]): Record<string, ShoppingItem[]> {
+  return items.reduce((groups, item) => {
+    const category = item.category || "Other";
+    
+    if (!groups[category]) {
+      groups[category] = [];
+    }
+    
+    groups[category].push(item);
+    return groups;
+  }, {} as Record<string, ShoppingItem[]>);
 }
 
 // Add a function to generate pastel colors for categories based on current palette
