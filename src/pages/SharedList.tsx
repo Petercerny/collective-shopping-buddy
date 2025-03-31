@@ -9,7 +9,7 @@ import { ArrowLeft, Users } from "lucide-react";
 import Header from "@/components/Header";
 import NewItemForm from "@/components/NewItemForm";
 import ShoppingItemComponent from "@/components/ShoppingItem";
-import { sortItems, groupItemsByCategory } from "@/lib/utils";
+import { sortItems, groupItemsByCategory, getPaletteButtonClass } from "@/lib/utils";
 import { usePalette } from "@/lib/PaletteContext";
 import {
   Select,
