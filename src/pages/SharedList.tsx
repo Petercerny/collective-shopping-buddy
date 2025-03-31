@@ -18,6 +18,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { 
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 
 const SharedList = () => {
   const { shareId } = useParams<{ shareId: string }>();
@@ -32,35 +40,30 @@ const SharedList = () => {
   const [groupedItems, setGroupedItems] = useState<Record<string, ShoppingItem[]>>({});
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [showErrorDialog, setShowErrorDialog] = useState<boolean>(false);
 
   useEffect(() => {
     if (!shareId) {
       setError("No share ID provided");
       setIsLoading(false);
+      setShowErrorDialog(true);
       return;
     }
     
     try {
+      console.log("Attempting to fetch shared list with ID:", shareId);
       const shoppingList = getListByShareId(shareId);
+      console.log("Result of getListByShareId:", shoppingList);
       
       if (!shoppingList) {
         console.error(`Shared list with ID ${shareId} not found`);
         setError("The shared shopping list you're looking for doesn't exist or has expired");
-        toast({
-          variant: "destructive",
-          title: "List not found",
-          description: "The shared shopping list you're looking for doesn't exist or has expired",
-        });
-        
-        // Don't navigate away immediately to give the toast a chance to show
-        setTimeout(() => {
-          navigate("/");
-        }, 3000);
-        
+        setShowErrorDialog(true);
         setIsLoading(false);
         return;
       }
       
+      console.log("Found shared list:", shoppingList.name);
       setList(shoppingList);
       const sorted = sortItems(shoppingList.items, sortOption);
       setSortedItems(sorted);
@@ -73,9 +76,10 @@ const SharedList = () => {
     } catch (error) {
       console.error("Error loading shared list:", error);
       setError("Error loading the shared list");
+      setShowErrorDialog(true);
       setIsLoading(false);
     }
-  }, [shareId, navigate, toast, sortOption, showByCategory]);
+  }, [shareId, sortOption, showByCategory]);
 
   const handleAddItem = (item: ShoppingItem) => {
     if (!list) return;
@@ -176,6 +180,12 @@ const SharedList = () => {
     }
   };
 
+  // Go to home page and close error dialog
+  const handleGoToHome = () => {
+    navigate("/");
+    setShowErrorDialog(false);
+  };
+
   const renderItems = () => {
     if (sortedItems.length === 0) {
       return (
@@ -224,109 +234,113 @@ const SharedList = () => {
       <div className={`min-h-screen flex flex-col bg-palette-${currentPalette}-background`}>
         <Header />
         <div className="flex-1 flex items-center justify-center">
-          <p>Loading shared list...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className={`min-h-screen flex flex-col bg-palette-${currentPalette}-background`}>
-        <Header />
-        <div className="flex-1 flex flex-col items-center justify-center">
-          <div className="bg-white p-5 rounded-lg shadow-sm mb-6 max-w-md">
-            <h2 className="text-xl font-bold mb-4 text-red-600">List not found</h2>
-            <p className="mb-4">{error}</p>
-            <Button onClick={() => navigate("/")} className={getPaletteButtonClass(currentPalette)}>
-              Go back to Home
-            </Button>
+          <div className="flex flex-col items-center space-y-4 p-6">
+            <div className="animate-spin w-8 h-8 border-4 border-primary rounded-full border-t-transparent"></div>
+            <p>Loading shared list...</p>
           </div>
         </div>
       </div>
     );
   }
 
-  if (!list) {
-    return (
-      <div className={`min-h-screen flex flex-col bg-palette-${currentPalette}-background`}>
-        <Header />
-        <div className="flex-1 flex items-center justify-center">
-          <p>No shared list found. Redirecting to home...</p>
-        </div>
-      </div>
-    );
-  }
-
+  // Error dialog
   return (
-    <div className={`min-h-screen flex flex-col bg-palette-${currentPalette}-background`}>
-      <Header />
-      <main className="container mx-auto px-4 py-6 flex-1">
-        <div className="max-w-2xl mx-auto">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" onClick={() => navigate("/")} className="p-2">
-                <ArrowLeft size={20} />
-              </Button>
-              <h2 className="text-2xl font-bold flex items-center">
-                {list.name}
-                <span className="inline-flex items-center ml-2 px-2 py-1 text-xs rounded bg-blue-100 text-blue-800">
-                  <Users size={12} className="mr-1" />
-                  Shared
-                </span>
-              </h2>
+    <>
+      <AlertDialog open={showErrorDialog} onOpenChange={setShowErrorDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-red-600">List not found</AlertDialogTitle>
+            <AlertDialogDescription>
+              {error || "The shared shopping list you're looking for doesn't exist or has expired."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogAction onClick={handleGoToHome} className={getPaletteButtonClass(currentPalette)}>
+            Go to Home
+          </AlertDialogAction>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <div className={`min-h-screen flex flex-col bg-palette-${currentPalette}-background`}>
+        <Header />
+        <main className="container mx-auto px-4 py-6 flex-1">
+          {!list ? (
+            <div className="flex-1 flex flex-col items-center justify-center">
+              <div className="bg-white p-5 rounded-lg shadow-sm mb-6 max-w-md">
+                <h2 className="text-xl font-bold mb-4 text-red-600">List not found</h2>
+                <p className="mb-4">{error || "The shared shopping list you're looking for doesn't exist or has expired."}</p>
+                <Button onClick={() => navigate("/")} className={getPaletteButtonClass(currentPalette)}>
+                  Go back to Home
+                </Button>
+              </div>
             </div>
-          </div>
-          
-          <div className="bg-white p-5 rounded-lg shadow-sm mb-6">
-            <div className="mb-4 pb-4 border-b">
-              <p className="text-sm text-gray-500">
-                You are viewing a shared shopping list. Any changes you make will be visible to everyone with the link.
-              </p>
-            </div>
-            
-            <NewItemForm onItemAdd={handleAddItem} />
-            
-            <div className="flex justify-between items-center mb-4 border-b pb-3">
-              <div className="flex items-center">
-                <label className="mr-2 text-sm text-gray-600">Sort by:</label>
-                <Select value={sortOption} onValueChange={(value) => setSortOption(value as SortOption)}>
-                  <SelectTrigger className="w-[150px] h-8 text-xs">
-                    <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="name">Name</SelectItem>
-                    <SelectItem value="category">Category</SelectItem>
-                    <SelectItem value="added">Recently Added</SelectItem>
-                    <SelectItem value="checked">Unchecked First</SelectItem>
-                  </SelectContent>
-                </Select>
+          ) : (
+            <div className="max-w-2xl mx-auto">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-2">
+                  <Button variant="ghost" onClick={() => navigate("/")} className="p-2">
+                    <ArrowLeft size={20} />
+                  </Button>
+                  <h2 className="text-2xl font-bold flex items-center">
+                    {list.name}
+                    <span className="inline-flex items-center ml-2 px-2 py-1 text-xs rounded bg-blue-100 text-blue-800">
+                      <Users size={12} className="mr-1" />
+                      Shared
+                    </span>
+                  </h2>
+                </div>
               </div>
               
-              <div className="flex items-center">
-                <label className="mr-2 text-sm text-gray-600">View:</label>
-                <Select 
-                  value={showByCategory ? "category" : "list"} 
-                  onValueChange={(value) => setShowByCategory(value === "category")}
-                >
-                  <SelectTrigger className="w-[150px] h-8 text-xs">
-                    <SelectValue placeholder="View" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="list">List View</SelectItem>
-                    <SelectItem value="category">Category View</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="bg-white p-5 rounded-lg shadow-sm mb-6">
+                <div className="mb-4 pb-4 border-b">
+                  <p className="text-sm text-gray-500">
+                    You are viewing a shared shopping list. Any changes you make will be visible to everyone with the link.
+                  </p>
+                </div>
+                
+                <NewItemForm onItemAdd={handleAddItem} />
+                
+                <div className="flex justify-between items-center mb-4 border-b pb-3">
+                  <div className="flex items-center">
+                    <label className="mr-2 text-sm text-gray-600">Sort by:</label>
+                    <Select value={sortOption} onValueChange={(value) => setSortOption(value as SortOption)}>
+                      <SelectTrigger className="w-[150px] h-8 text-xs">
+                        <SelectValue placeholder="Sort by" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="name">Name</SelectItem>
+                        <SelectItem value="category">Category</SelectItem>
+                        <SelectItem value="added">Recently Added</SelectItem>
+                        <SelectItem value="checked">Unchecked First</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <label className="mr-2 text-sm text-gray-600">View:</label>
+                    <Select 
+                      value={showByCategory ? "category" : "list"} 
+                      onValueChange={(value) => setShowByCategory(value === "category")}
+                    >
+                      <SelectTrigger className="w-[150px] h-8 text-xs">
+                        <SelectValue placeholder="View" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="list">List View</SelectItem>
+                        <SelectItem value="category">Category View</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              
+                <div className="mt-4">
+                  {renderItems()}
+                </div>
               </div>
             </div>
-          
-            <div className="mt-4">
-              {renderItems()}
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
+          )}
+        </main>
+      </div>
+    </>
   );
 };
 

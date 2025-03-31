@@ -46,6 +46,11 @@ export const getListByShareId = (shareId: string): ShoppingList | undefined => {
   if (!shareId) return undefined;
   
   const lists = getStoredLists();
+  // Log all lists and their shareIds to debug
+  console.log("All lists:", lists);
+  console.log("Looking for shareId:", shareId);
+  console.log("Lists with shareIds:", lists.filter(list => list.shareId).map(l => ({ name: l.name, shareId: l.shareId })));
+  
   return lists.find(list => list.shareId === shareId);
 };
 
@@ -60,7 +65,10 @@ export const generateShareId = (listId: string): string => {
   
   const shareId = generateId();
   lists[listIndex].shareId = shareId;
+  
+  // Save the updated list with the new shareId
   localStorage.setItem(STORAGE_KEY, JSON.stringify(lists));
   
+  console.log(`Generated shareId ${shareId} for list ${listId}`);
   return shareId;
 };
