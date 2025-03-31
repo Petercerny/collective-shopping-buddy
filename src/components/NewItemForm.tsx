@@ -68,20 +68,21 @@ const NewItemForm = ({ onItemAdd }: NewItemFormProps) => {
           className={`flex-1 bg-white/80 border-palette-${currentPalette}-primary/30`}
         />
         <Button 
-          type="button"
-          variant="outline"
-          onClick={() => setIsExpanded(!isExpanded)}
-          className={`px-2 ${getPaletteButtonClass(currentPalette, true)}`}
-        >
-          {isExpanded ? "−" : "+"}
-        </Button>
-        <Button 
           type="submit" 
           className={getPaletteButtonClass(currentPalette)}
         >
           Add
         </Button>
       </div>
+      
+      <Button 
+        type="button"
+        variant="outline"
+        onClick={() => setIsExpanded(!isExpanded)}
+        className={`mt-2 text-sm w-full justify-center ${getPaletteButtonClass(currentPalette, true)}`}
+      >
+        {isExpanded ? "Hide Options" : "Show Options"}
+      </Button>
       
       {isExpanded && (
         <div className="mt-3 grid grid-cols-3 gap-3 animate-fade-in">

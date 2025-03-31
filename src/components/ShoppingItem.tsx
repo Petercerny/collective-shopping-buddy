@@ -22,6 +22,7 @@ interface ShoppingItemProps {
 const ShoppingItem = ({ item, onCheck, onDelete, onUpdate }: ShoppingItemProps) => {
   const { currentPalette } = usePalette();
   const [isEditing, setIsEditing] = useState(false);
+  const [editName, setEditName] = useState<string>(item.name);
   const [editQuantity, setEditQuantity] = useState<number>(item.quantity || 1);
   const [editUnit, setEditUnit] = useState<string>(item.unit || "");
   const [editCategory, setEditCategory] = useState<string>(item.category || "Other");
@@ -41,6 +42,7 @@ const ShoppingItem = ({ item, onCheck, onDelete, onUpdate }: ShoppingItemProps) 
     if (!onUpdate) return;
     
     onUpdate(item.id, {
+      name: editName,
       quantity: editQuantity,
       unit: editUnit,
       category: editCategory,
@@ -158,6 +160,16 @@ const ShoppingItem = ({ item, onCheck, onDelete, onUpdate }: ShoppingItemProps) 
                   
                   <div className="grid gap-2">
                     <div className="flex items-center gap-2">
+                      <label className="text-sm">Name:</label>
+                      <Input
+                        type="text"
+                        value={editName}
+                        onChange={(e) => setEditName(e.target.value)}
+                        className="h-8"
+                      />
+                    </div>
+                    
+                    <div className="flex items-center gap-2">
                       <label className="text-sm">Quantity:</label>
                       <Input
                         type="number"
@@ -205,7 +217,7 @@ const ShoppingItem = ({ item, onCheck, onDelete, onUpdate }: ShoppingItemProps) 
                     <Button
                       size="sm"
                       onClick={handleEditSave}
-                      className={getPaletteCheckboxClass()}
+                      className={`bg-palette-${currentPalette}-primary hover:bg-palette-${currentPalette}-primary/80`}
                     >
                       Save
                     </Button>
