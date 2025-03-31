@@ -52,9 +52,7 @@ const NewItemForm = ({ onItemAdd }: NewItemFormProps) => {
     setItemName("");
     setQuantity(1);
     setUnit("");
-    if (!isExpanded) {
-      setCategory("Other");
-    }
+    // Don't reset the category when form is expanded to maintain user's preference
     
     // Show toast with category info for better user feedback
     toast({
@@ -111,7 +109,7 @@ const NewItemForm = ({ onItemAdd }: NewItemFormProps) => {
               </SelectTrigger>
               <SelectContent>
                 {UNIT_OPTIONS.map((unitOption) => (
-                  <SelectItem key={unitOption} value={unitOption}>
+                  <SelectItem key={unitOption} value={unitOption || " "}>
                     {unitOption || "None"}
                   </SelectItem>
                 ))}
