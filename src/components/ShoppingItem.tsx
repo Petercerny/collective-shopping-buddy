@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ShoppingItem as ShoppingItemType } from "@/types";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,16 @@ const ShoppingItem = ({ item, onCheck, onDelete, onUpdate }: ShoppingItemProps) 
   const [editUnit, setEditUnit] = useState<string>(item.unit || "");
   const [editCategory, setEditCategory] = useState<string>(item.category || "Other");
   
+  // Reset edit states whenever the item changes or editing mode is entered
+  useEffect(() => {
+    if (isEditing) {
+      setEditName(item.name);
+      setEditQuantity(item.quantity || 1);
+      setEditUnit(item.unit || "");
+      setEditCategory(item.category || "Other");
+    }
+  }, [item, isEditing]);
+  
   const handleCheckChange = (checked: boolean) => {
     onCheck(item.id, checked);
   };
@@ -42,7 +52,7 @@ const ShoppingItem = ({ item, onCheck, onDelete, onUpdate }: ShoppingItemProps) 
     if (!onUpdate) return;
     
     onUpdate(item.id, {
-      name: editName,
+      name: editName.trim(),
       quantity: editQuantity,
       unit: editUnit,
       category: editCategory,

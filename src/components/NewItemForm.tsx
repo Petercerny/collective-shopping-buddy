@@ -55,6 +55,12 @@ const NewItemForm = ({ onItemAdd }: NewItemFormProps) => {
     if (!isExpanded) {
       setCategory("Other");
     }
+    
+    // Show toast with category info for better user feedback
+    toast({
+      title: "Item added",
+      description: `"${itemName}" added to ${category || "Other"} category`,
+    });
   };
 
   return (
