@@ -30,28 +30,50 @@ const SharedList = () => {
   const [sortOption, setSortOption] = useState<SortOption>("checked");
   const [showByCategory, setShowByCategory] = useState<boolean>(false);
   const [groupedItems, setGroupedItems] = useState<Record<string, ShoppingItem[]>>({});
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!shareId) return;
-    
-    const shoppingList = getListByShareId(shareId);
-    
-    if (!shoppingList) {
-      toast({
-        variant: "destructive",
-        title: "List not found",
-        description: "The shared shopping list you're looking for doesn't exist or has expired",
-      });
-      navigate("/");
+    if (!shareId) {
+      setError("No share ID provided");
+      setIsLoading(false);
       return;
     }
     
-    setList(shoppingList);
-    const sorted = sortItems(shoppingList.items, sortOption);
-    setSortedItems(sorted);
-    
-    if (showByCategory) {
-      setGroupedItems(groupItemsByCategory(sorted));
+    try {
+      const shoppingList = getListByShareId(shareId);
+      
+      if (!shoppingList) {
+        console.error(`Shared list with ID ${shareId} not found`);
+        setError("The shared shopping list you're looking for doesn't exist or has expired");
+        toast({
+          variant: "destructive",
+          title: "List not found",
+          description: "The shared shopping list you're looking for doesn't exist or has expired",
+        });
+        
+        // Don't navigate away immediately to give the toast a chance to show
+        setTimeout(() => {
+          navigate("/");
+        }, 3000);
+        
+        setIsLoading(false);
+        return;
+      }
+      
+      setList(shoppingList);
+      const sorted = sortItems(shoppingList.items, sortOption);
+      setSortedItems(sorted);
+      
+      if (showByCategory) {
+        setGroupedItems(groupItemsByCategory(sorted));
+      }
+      
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error loading shared list:", error);
+      setError("Error loading the shared list");
+      setIsLoading(false);
     }
   }, [shareId, navigate, toast, sortOption, showByCategory]);
 
@@ -197,12 +219,40 @@ const SharedList = () => {
     );
   };
 
-  if (!list) {
+  if (isLoading) {
     return (
       <div className={`min-h-screen flex flex-col bg-palette-${currentPalette}-background`}>
         <Header />
         <div className="flex-1 flex items-center justify-center">
           <p>Loading shared list...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={`min-h-screen flex flex-col bg-palette-${currentPalette}-background`}>
+        <Header />
+        <div className="flex-1 flex flex-col items-center justify-center">
+          <div className="bg-white p-5 rounded-lg shadow-sm mb-6 max-w-md">
+            <h2 className="text-xl font-bold mb-4 text-red-600">List not found</h2>
+            <p className="mb-4">{error}</p>
+            <Button onClick={() => navigate("/")} className={getPaletteButtonClass(currentPalette)}>
+              Go back to Home
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!list) {
+    return (
+      <div className={`min-h-screen flex flex-col bg-palette-${currentPalette}-background`}>
+        <Header />
+        <div className="flex-1 flex items-center justify-center">
+          <p>No shared list found. Redirecting to home...</p>
         </div>
       </div>
     );

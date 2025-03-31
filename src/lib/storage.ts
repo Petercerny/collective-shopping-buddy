@@ -43,21 +43,24 @@ export const getListById = (id: string): ShoppingList | undefined => {
 };
 
 export const getListByShareId = (shareId: string): ShoppingList | undefined => {
+  if (!shareId) return undefined;
+  
   const lists = getStoredLists();
   return lists.find(list => list.shareId === shareId);
 };
 
 export const generateShareId = (listId: string): string => {
   const lists = getStoredLists();
-  const list = lists.find(l => l.id === listId);
+  const listIndex = lists.findIndex(l => l.id === listId);
   
-  if (!list) {
+  if (listIndex === -1) {
+    console.error(`List with ID ${listId} not found when generating share ID`);
     throw new Error("List not found");
   }
   
   const shareId = generateId();
-  list.shareId = shareId;
-  saveList(list);
+  lists[listIndex].shareId = shareId;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(lists));
   
   return shareId;
 };
